@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
   data.open("dataset.txt");
   myfile.open ("tests.txt");
     init_randomness();
-    uint32_t k0 = 700; 
+    uint32_t k0 = 700; //theoretical for e=0.03 according to the survey
     uint32_t n, k, nExp;
     if (argc < 3) {
       n = 1815365;
@@ -47,7 +47,6 @@ int main(int argc, char *argv[]) {
 
 #ifdef MYHASH1_4
     tab1perm4_64 hash;
-    k *= 5;
 #endif
 #ifdef MYHASH1_8
     tab1perm8_64 hash;

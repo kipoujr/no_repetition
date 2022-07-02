@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
   ofstream myfile;
   myfile.open ("tests.txt");
   init_randomness();
-  uint32_t k0 = 8192; 
+  uint32_t k0 = 8192; //theoretical for e=0.01 according to the survey (our reasoning gives 80,000)
   uint32_t n, k, nExp;
   if (argc < 3) {
     n = 5000000;
