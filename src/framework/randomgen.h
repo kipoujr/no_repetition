@@ -24,13 +24,13 @@ int usedBoolByte = 8;
 
 // Initialize the random generator
 void init_randomness() {
-	for (uint32_t i = 1; i <= 50; ++i) {
+	for (uint32_t i = 1; i <= 80; ++i) {
 		ifstream input("seed/bytes" + to_string(i) + ".bin", ios::binary|ios::in);
 		randomBytes.insert(randomBytes.end(), (istreambuf_iterator<char>(input)), (istreambuf_iterator<char>()));
 		input.close();
 	}
 #ifdef DEBUG
-	cout << "Available number of random bytes: " << randomBytes.size() << endl;
+	cerr << "Available number of random bytes: " << randomBytes.size() << endl;
 #endif
 	randomHasInit = true;
 	usedBytes = 0;

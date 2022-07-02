@@ -584,10 +584,8 @@ permutedtab<C, D, sixtyfour>::permutedtab() {
 template <const uint32_t C, const uint32_t D, const bool sixtyfour>
 void permutedtab<C, D, sixtyfour>::init() {
     // Use a degree-100 polynomial to fill out the entries.
-    // cout << "A" << endl;
     polyhash_64<100> h;
     h.init();
-    // cout << "B" << endl;
 
 	uint_t x = 0;
     for (uint32_t i = 0; i < C; ++i) {
@@ -595,7 +593,6 @@ void permutedtab<C, D, sixtyfour>::init() {
             m_T[j][i] = (uint_t)h(x++);
         }
     }
-    // cout << "C" << endl;
 
     for (uint32_t i = 0; i < D; ++i) {
         // Initialize table
@@ -609,7 +606,6 @@ void permutedtab<C, D, sixtyfour>::init() {
             swap(m_P[j][i], m_P[(j*val)>>max_bits][i]);
         }
     }
-    // cout << "D" << endl;
 }
 
 template <const uint32_t C, const uint32_t D, const bool sixtyfour>

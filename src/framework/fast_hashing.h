@@ -258,15 +258,15 @@ void twisttab4_64::init() {
 
 	uint32_t x = 0;
     for (uint32_t i = 0; i < 4; ++i) {
-        for (uint32_t j = 0; j < 1 << 16; ++j) {
-            m_T[j][i] = ((uint64_t)h(x++) << 32) + h(x++);
+        for (uint32_t j = 0; j < (1 << 16); ++j) {
+            m_T[j][i] = ((__uint128_t)h(x++) << 64) + h(x++);
         }
     }
 }
 
 uint64_t twisttab4_64::operator()(uint64_t x) {
     __uint128_t tmp = m_T[(uint16_t)x][0] ^ m_T[(uint16_t)(x >> 16)][1] ^ m_T[(uint16_t)(x >> 32)][2];
-    return ((uint64_t) tmp) ^ ((uint64_t)m_T[((uint16_t)(x >> 48)) ^ ((uint16_t)(tmp >> 64))][3]);
+    return (uint64_t)tmp ^ m_T[(uint16_t)(tmp >> 64) ^ (uint16_t)(x >> 48)][3];
 }
 
 class twisttab8_64 {
@@ -285,7 +285,7 @@ void twisttab8_64::init() {
 	uint32_t x = 0;
     for (uint32_t i = 0; i < 8; ++i) {
         for (uint32_t j = 0; j < 1 << 8; ++j) {
-            m_T[j][i] = ((uint64_t)h(x++) << 32) + h(x++);
+            m_T[j][i] = ((__uint128_t)h(x++) << 64) + h(x++);
         }
     }
 }
@@ -484,9 +484,11 @@ public:
 
 
 void tab1perm2_32::init() {
+	printf("moxakos\n");
     // Use a degree-100 polynomial to fill out the entries.
     polyhash_32<100> h;                      
     h.init();
+	printf("moxakos kai xana\n");
 
 	uint32_t x = 0;
     for (uint32_t i = 0; i < 2; ++i) {
@@ -494,11 +496,13 @@ void tab1perm2_32::init() {
             m_T[j][i] = h(x++);
         }
     }
+	printf("den paizei na min eftasa edo\n");
 
     // Initialize table
     for (uint32_t j = 0; j < 1 << 16; ++j) {
         m_P[j] = j;
     }
+		printf("den paizei na min eftasa edo\n");
 
     // Shuffle the table with Fisher-Yates shuffle
     for (uint64_t j = (1 << 16) - 1; j > 0; --j) {
@@ -506,6 +510,7 @@ void tab1perm2_32::init() {
         swap(m_P[j], m_P[(j*val)>>32]);
         m_P[j] = (m_P[j] ^ j) << 16;
     }
+		printf("den paizei na min eftasa edo\n");
 }
 
 uint32_t tab1perm2_32::operator()(uint32_t x) {
@@ -565,7 +570,9 @@ public:
 
 
 void tab1perm4_64::init() {
-  //printf("Initializing tab1perm4_64...\n");
+#ifdef DEBUG
+    fprintf(stderr, "Initializing tab1perm4_64...\n");
+#endif
     // Use a degree-100 polynomial to fill out the entries.
     polyhash_64<100> h;
     h.init();
@@ -708,6 +715,40 @@ uint64_t mixedtab8_64::operator()(uint64_t x) {
     for (uint32_t i = 0; i < 8; ++i, drv >>= 8)
         h ^= mt_T2[(uint8_t)drv][i];
     return (uint64_t)h;
+}
+
+class mixedtab8_64_1 {
+    // Use 8 characters + 1 derived character.
+    __uint128_t mt_T1[256][8];
+    uint64_t mt_T2[256];
+
+public:
+    void init();
+    uint64_t operator()(uint64_t x);
+};
+
+void mixedtab8_64_1::init() {
+    polyhash_64<100> h;  
+    h.init();
+
+	uint32_t x = 0;
+    for (uint32_t i = 0; i < 8; ++i) {
+        for (uint32_t j = 0; j < 256; ++j) {
+            mt_T1[j][i] = h(x++);
+            mt_T1[j][i] <<= 64;
+            mt_T1[j][i] += h(x++);
+        }
+    }
+    for (uint32_t j = 0; j < 256; ++j) {
+        mt_T2[j] = h(x++);
+    }
+}
+
+uint64_t mixedtab8_64_1::operator()(uint64_t x) {
+    __uint128_t h=0; // Final hash value
+    for (uint32_t i = 0; i < 8; ++i, x >>= 8)
+        h ^= mt_T1[(uint8_t)x][i];
+    return (uint64_t)(h^mt_T2[(uint8_t)(h >> 64)]);
 }
 
 
