@@ -1,31 +1,30 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+A = [357482,128529,199340,185371,115872]
+B = [293458,102255,204400,203542,108408]
+#A = [1892135,385659,1070399,188793,105579]
+#B = [1747741,582530,1112823,253676,122928]
+#A = [5279359,1409705,2829316,3250718,1958279]
+#B = [5349699,1235807,2731691,3023679,1781945]
+#A = [105663,35750,71442,25492,19723]
+#B = [87230,33720,64928,23890,17363]
+
+performance  = [x/10**4 for x in A]
+print(performance)
+performance2 = [x/10**4 for x in B]
+
 plt.rcdefaults()
 fig, ax = plt.subplots()
-
-# Example data
-#people would be our hash functions
-#performance would be our times
-#we don't need error
-
-#people = ('Tom', 'Dick', 'Harry', 'Slim', 'Jim')
-#y_pos = np.arange(len(people))
-#performance = 3 + 10 * np.random.rand(len(people))
-#error = np.random.rand(len(people))
-
-y_pos = np.arange(7)
-#A = [6.838,6.649,3.528,1.772,5.721,3.651,2.629] #bottom-k 20 exp with card 5*10**7
-#A = [104.064, 123.382, 59.302, 28.299, 102.230, 67.430, 39.470] #sampling, 20 exp with card 10**9
-#A = [2.377, 2.868, 3.908, 0.991, 3.166, 2.039, 2.260] #real-data-processed, 500 exp with card 6.5*10**5
-A = [5.651, 7.667, 9.727, 1.775, 8.111, 4.263, 5.179] #real-world, 500 exp with card 1.8*10**6
-performance = [round(10**3*x/20) for x in A]
+y_pos = np.arange(len(A))
 ax.set_xlabel('Average Running Time (ms)')
-
-ax.barh(y_pos, performance, align='center')
 ax.set_yticks(y_pos)
-ax.set_yticklabels(['Murmur', 'MixedTab', 'TwistTab', 'MultShift', 'Poly3', 'Poly2', 'Tab1Perm']) # ax.set_yticklabels(people)
+ax.set_yticklabels(['Murmur', 'Mult\nShift', 'Poly2', 'Mixed\nTab', 'Tab1\nPerm'])
 ax.invert_yaxis()  # labels read top-to-bottom
-#ax.set_title('Total time for each hash-function')
+ax.tick_params(axis='both', which='major', labelsize=13)
+
+ax.barh(y_pos-0.2, performance , 0.4, label='PC 1')
+ax.barh(y_pos+0.2, performance2, 0.4, label='PC 2')
+ax.legend()
 
 plt.savefig('pic.png')
